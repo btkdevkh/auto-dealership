@@ -3,31 +3,57 @@ import Car from "./classes/Car.js";
 import AutoGTA from "./classes/AutoGTA.js";
 const form = document.querySelector('form');
 const vehiculeList = document.getElementById('vehicule_list');
+const immatInput = document.getElementById('immatriculation');
+const rentBtn = document.querySelector('.rent');
+const addBtn = document.querySelector('.addPost');
+const msg = document.querySelector('.msg');
 // Datas
-const car1 = new Car('EE15RRS');
-const car2 = new Car('AA155XB');
-const bus1 = new Bus('BB05LBB');
-const bus2 = new Bus('CC155BB');
 const gta = new AutoGTA();
-gta.addCar(car1);
-gta.addCar(car2);
-gta.addCar(bus1);
-gta.addCar(bus2);
+gta.addCar(new Car('EE15RRS'));
+gta.addCar(new Car('AA155XB'));
+gta.addCar(new Bus('BB05LBB'));
+gta.addCar(new Bus('CC155BB'));
+gta.addCar(new Bus('VV155KK'));
 // Logics
 const loadVehicules = () => {
-    vehiculeList.innerHTML = "";
+    let html = "";
     gta.getVehicules().forEach(v => {
-        vehiculeList.innerHTML += `
-      <option value="${v.imatriculation}">${v.type} : ${v.imatriculation}</option>
-    `;
+        html += `<option value="${v.imatriculation}">${v.type} : ${v.imatriculation}</option>`;
     });
+    return html;
+};
+const uiControls = (isTrue) => {
+    if (!isTrue) {
+        msg.classList.remove('d-none');
+        msg.classList.add('alert-danger');
+        msg.classList.remove('alert-success');
+        msg.textContent = 'Immariculation is required';
+    }
+    else {
+        msg.classList.remove('alert-danger');
+        msg.classList.remove('d-none');
+        msg.classList.add('alert-success');
+        msg.textContent = 'Vehicule added';
+    }
 };
 // Events
-loadVehicules();
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const selectedValue = form.vehicule_list.value;
-    gta.rendACar(selectedValue);
-    loadVehicules();
+document.addEventListener('DOMContentLoaded', () => {
+    vehiculeList.innerHTML = loadVehicules();
+    rentBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        gta.rendACar(form.vehicule_list.value);
+        vehiculeList.innerHTML = loadVehicules();
+    });
+    addBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log(immatInput.value);
+        if (!immatInput.value) {
+            uiControls(false);
+            return;
+        }
+        uiControls(true);
+        gta.addCar(new Car(immatInput.value));
+        vehiculeList.innerHTML = loadVehicules();
+    });
 });
 //# sourceMappingURL=main.js.map

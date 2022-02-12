@@ -5,34 +5,65 @@ import AutoGTA from "./classes/AutoGTA.js"
 const form = document.querySelector('form')! as HTMLFormElement
 const vehiculeList = document.getElementById('vehicule_list')! as HTMLSelectElement
 
+const immatInput = document.getElementById('immatriculation')! as HTMLInputElement
+const rentBtn = document.querySelector('.rent')! as HTMLButtonElement
+const addBtn = document.querySelector('.addPost')! as HTMLButtonElement
+const msg = document.querySelector('.msg')! as HTMLDivElement
+
 // Datas
-const car1 = new Car('EE15RRS')
-const car2 = new Car('AA155XB')
-const bus1 = new Bus('BB05LBB')
-const bus2 = new Bus('CC155BB')
 const gta = new AutoGTA()
-gta.addCar(car1)
-gta.addCar(car2)
-gta.addCar(bus1)
-gta.addCar(bus2)
+gta.addCar(new Car('EE15RRS'))
+gta.addCar(new Car('AA155XB'))
+gta.addCar(new Bus('BB05LBB'))
+gta.addCar(new Bus('CC155BB'))
+gta.addCar(new Bus('VV155KK'))
 
 // Logics
-const loadVehicules = () => {
-  vehiculeList.innerHTML = ""
+const loadVehicules = (): string => {
+  let html: string = ""
   gta.getVehicules().forEach(v => {
-    vehiculeList.innerHTML += `
-      <option value="${v.imatriculation}">${v.type} : ${v.imatriculation}</option>
-    `
+    html += `<option value="${v.imatriculation}">${v.type} : ${v.imatriculation}</option>`
   })
+
+  return html
+}
+
+const uiControls = (isTrue: boolean) => {
+  if(!isTrue) {
+    msg.classList.remove('d-none')
+    msg.classList.add('alert-danger')
+    msg.classList.remove('alert-success')
+    msg.textContent = 'Immariculation is required'
+  } else {
+    msg.classList.remove('alert-danger')
+    msg.classList.remove('d-none')
+    msg.classList.add('alert-success')
+    msg.textContent = 'Vehicule added'
+  }
 }
 
 // Events
-loadVehicules()
+document.addEventListener('DOMContentLoaded', () => {
+  vehiculeList.innerHTML = loadVehicules()
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault()
+  rentBtn.addEventListener('click', (e) => {
+    e.preventDefault()
 
-  const selectedValue = form.vehicule_list.value
-  gta.rendACar(selectedValue)
-  loadVehicules()
+    gta.rendACar(form.vehicule_list.value)
+    vehiculeList.innerHTML = loadVehicules()
+  })
+
+  addBtn.addEventListener('click', (e) => {
+    e.preventDefault()
+    
+    console.log(immatInput.value);
+    if(!immatInput.value) {
+      uiControls(false)
+      return
+    }
+
+    uiControls(true)    
+    gta.addCar(new Car(immatInput.value))
+    vehiculeList.innerHTML = loadVehicules()
+  })
 })

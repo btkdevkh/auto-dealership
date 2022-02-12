@@ -12,7 +12,7 @@ class VehiculeList {
         }
     }
     rendACar(vehicule) {
-        this._vehiculeList.splice(this._vehiculeList.indexOf(vehicule), 1);
+        this.vehiculeList.splice(this.vehiculeList.indexOf(vehicule), 1);
     }
 }
 export default VehiculeList;

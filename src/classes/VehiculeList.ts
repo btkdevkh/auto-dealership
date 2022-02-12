@@ -13,8 +13,8 @@ class VehiculeList<T> {
     }
   }
 
-  public rendACar(vehicule: T) {
-    this._vehiculeList.splice(this._vehiculeList.indexOf(vehicule), 1)
+  public rendACar(vehicule: T) {    
+    this.vehiculeList.splice(this.vehiculeList.indexOf(vehicule), 1)
   }
 }
 
